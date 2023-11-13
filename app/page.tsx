@@ -1,8 +1,9 @@
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default function Page() {
   return (
-    <p className='text-red-200'>
-      Hello from notion clone!
-    </p>
-  )
+    <div>
+      <Button className="m-16">Button</Button>
+    </div>
+  );
 }
