@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 import { ModeToggle } from "@/components/theme-mode-toggle";
 import { useConvexAuth } from "convex/react";
-import { SignInButton } from "@clerk/clerk-react";
+import { SignInButton, UserButton } from "@clerk/clerk-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/spinner";
+import Link from "next/link";
 
 export const Navbar = () => {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -14,7 +15,7 @@ export const Navbar = () => {
   return (
     <div
       className={cn(
-        "z-50 bg-background/80 backdrop-blur-md fixed top-0 flex items-center w-full p-6",
+        "z-50  transition-all duration-100 bg-background/80 backdrop-blur-[19px] fixed top-0 flex items-center w-full p-6",
         scrolled && "border-b ",
       )}
     >
@@ -31,6 +32,14 @@ export const Navbar = () => {
             <SignInButton mode="modal">
               <Button size="sm">Get Votion free</Button>
             </SignInButton>
+          </>
+        )}
+        {isAuthenticated && !isLoading && (
+          <>
+            <Button variant="ghost" size="sm" asChild>
+              Enter Votion
+            </Button>
+            <UserButton afterSignOutUrl="/" />
           </>
         )}
         <ModeToggle />
