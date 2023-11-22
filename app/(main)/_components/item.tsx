@@ -1,10 +1,13 @@
 "use client";
 
 import { Skeleton } from "@/components/ui/skeleton";
+import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronRight, LucideIcon } from "lucide-react";
-
+import { useMutation } from "convex/react";
+import { ChevronDown, ChevronRight, LucideIcon, PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 interface ItemProps {
   id?: Id<"documents">;
   onClick: () => void;
@@ -30,9 +33,37 @@ export const Item = ({
   documentIcon,
   isSearch,
 }: ItemProps) => {
-  const handleExpand = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+  const create = useMutation(api.documents.create);
+  const router = useRouter();
+
+  const handleExpand = (
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
     event.stopPropagation();
     onExpand?.();
+  };
+
+  const onCreate = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) {
+      return;
+    }
+
+    const promise = create({
+      title: "Untitled",
+      parentDocument: id,
+    }).then((documentId) => {
+      if (!expanded) {
+        onExpand?.();
+      }
+      //   router.push(`/documents/${documentId}`);
+    });
+
+    toast.promise(promise, {
+      loading: "Creating new note...",
+      success: "New note created!",
+      error: "Failed to create a new note.",
+    });
   };
 
   const ChevronIcon = expanded ? ChevronDown : ChevronRight;
@@ -66,6 +97,17 @@ export const Item = ({
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded  border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 ">
           <span className="text-xs">⌘</span>k
         </kbd>
+      )}
+      {id && (
+        <div className="ml-auto flex- items-center gap-x-2">
+          <div
+            role="button"
+            onClick={onCreate}
+            className="opacity-0 group-hover:opacity-100 h-full ml-auto rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600"
+          >
+            <PlusIcon scale="0.2" />
+          </div>
+        </div>
       )}
     </div>
   );
