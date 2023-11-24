@@ -12,6 +12,33 @@ export const archive = mutation({
 
     const userId = identity.subject;
     const existingDocument = await context.db.get(args.id);
+
+    if (!existingDocument) {
+      throw new Error("No document found!");
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized");
+    }
+
+    const recursiveArchive = async (documentId: Id<"documents">) => {
+      const children = await context.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", userId).eq("parentDocument", documentId),
+        )
+        .collect();
+
+      for (const child of children) {
+        await recursiveArchive(child._id);
+      }
+    };
+
+    const document = await context.db.patch(args.id, {
+      isArchived: true,
+    });
+
+    return document;
   },
 });
 
