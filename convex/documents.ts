@@ -2,6 +2,19 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
 
+export const archive = mutation({
+  args: { id: v.id("documents") },
+  handler: async (context, args) => {
+    const identity = await context.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const existingDocument = await context.db.get(args.id);
+  },
+});
+
 export const getSidebar = query({
   args: {
     parentDocument: v.optional(v.id("documents")),
