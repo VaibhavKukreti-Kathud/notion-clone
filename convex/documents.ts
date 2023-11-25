@@ -30,6 +30,9 @@ export const archive = mutation({
         .collect();
 
       for (const child of children) {
+        await context.db.patch(child._id, {
+          isArchived: true,
+        });
         await recursiveArchive(child._id);
       }
     };
@@ -37,6 +40,8 @@ export const archive = mutation({
     const document = await context.db.patch(args.id, {
       isArchived: true,
     });
+
+    recursiveArchive(args.id);
 
     return document;
   },
