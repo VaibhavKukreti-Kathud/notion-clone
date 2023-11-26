@@ -51,6 +51,22 @@ export const Item = ({
   const { user } = useUser();
   const create = useMutation(api.documents.create);
   const router = useRouter();
+  const archive = useMutation(api.documents.archive);
+
+  const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    event.stopPropagation();
+    if (!id) {
+      return;
+    }
+
+    const promise = archive({ id });
+
+    toast.promise(promise, {
+      loading: "Moving note to trash...",
+      success: "Note moved to trash!",
+      error: "Couldn't move note to trash",
+    });
+  };
 
   const handleExpand = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -131,7 +147,7 @@ export const Item = ({
               side="right"
               forceMount
             >
-              <DropdownMenuItem onClick={() => {}}>
+              <DropdownMenuItem onClick={onArchive}>
                 <Trash className="w-4 h-4 mr-2" />
                 Delete
               </DropdownMenuItem>
