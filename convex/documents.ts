@@ -111,3 +111,66 @@ export const getAllDocuments = query({
     return documents;
   },
 });
+
+export const getTrash = query({
+  handler: async (context) => {
+    const identity = await context.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const archivedDocuments = await context.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), true))
+      .collect();
+
+    return archivedDocuments;
+  },
+});
+
+export const restore = mutation({
+  args: { id: v.id("documents") },
+  handler: async (context, args) => {
+    const identity = await context.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const existingDocument = await context.db.get(args.id);
+
+    if (!existingDocument) {
+      throw new Error("No document found!");
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized");
+    }
+
+    const recursiveRestore = async (documentId: Id<"documents">) => {
+      const children = await context.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", userId).eq("parentDocument", documentId),
+        )
+        .collect();
+
+      for (const child of children) {
+        await context.db.patch(child._id, {
+          isArchived: false,
+        });
+        await recursiveRestore(child._id);
+      }
+    };
+
+    const document = await context.db.patch(args.id, {
+      isArchived: false,
+    });
+
+    recursiveRestore(args.id);
+
+    return document;
+  },
+});
