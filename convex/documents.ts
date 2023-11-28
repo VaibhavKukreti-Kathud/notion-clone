@@ -174,3 +174,44 @@ export const restore = mutation({
     return document;
   },
 });
+
+export const remove = mutation({
+  args: { id: v.id("documents") },
+  handler: async (context, args) => {
+    const identity = await context.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const existingDocument = await context.db.get(args.id);
+
+    if (!existingDocument) {
+      throw new Error("No document found!");
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new Error("Not authorized");
+    }
+
+    const recursiveRemove = async (documentId: Id<"documents">) => {
+      const children = await context.db
+        .query("documents")
+        .withIndex("by_user_parent", (q) =>
+          q.eq("userId", userId).eq("parentDocument", documentId),
+        )
+        .collect();
+
+      for (const child of children) {
+        await context.db.delete(child._id);
+        await recursiveRemove(child._id);
+      }
+    };
+
+    await context.db.delete(args.id);
+
+    recursiveRemove(args.id);
+
+    return true;
+  },
+});
