@@ -208,10 +208,10 @@ export const remove = mutation({
       }
     };
 
-    await context.db.delete(args.id);
+    const document = await context.db.delete(args.id);
 
     recursiveRemove(args.id);
 
-    return true;
+    return document;
   },
 });
