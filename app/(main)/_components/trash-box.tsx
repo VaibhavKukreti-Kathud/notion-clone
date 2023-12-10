@@ -85,34 +85,10 @@ export const TrashBox = () => {
         {fileteredDocuments?.map((document) => (
           <div
             key={document._id}
-            onClick={() => {
-              onClick(document._id);
-            }}
-            className="flex items-center gap-x-2 p-2 hover:bg-neutral-300 dark:hover:bg-neutral-600 cursor-pointer rounded-sm"
-          >
-            <div className="flex-1 truncate">
-              <p className="text-sm">{document.title}</p>
-              <p className="text-xs text-muted-foreground">{document.userId}</p>
-            </div>
-            <div className="flex gap-x-1">
-              <div
-                onClick={(event) => {
-                  onRestore(event, document._id);
-                }}
-                className="text-xs text-neutral-600 hover:text-neutral-800 cursor-pointer"
-              >
-                Restore
-              </div>
-              <div
-                onClick={(event) => {
-                  onRemove(event, document._id);
-                }}
-                className="text-xs text-neutral-600 hover:text-neutral-800 cursor-pointer"
-              >
-                Delete
-              </div>
-            </div>
-          </div>
+            role="button"
+            className="text-sm rounded-sm w-full hover:bg-primary/5 flex items-center text-primary justify-between"
+            onClick={() => onClick(document._id)}
+          ></div>
         ))}
       </div>
     </div>
