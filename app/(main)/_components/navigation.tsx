@@ -157,6 +157,15 @@ export const Navigation = () => {
           />
           <Item label="Settings" icon={Settings} onClick={() => {}} />
           <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
+        </div>
+        <div className="mt-4">
+          {/* {documents?.map((document) => (
+            <div key={document._id}>
+              <p>{document.title}</p>
+            </div>
+          ))} */}
+          <DocumentList data={[]} />
+          <Item onClick={handleCreate} icon={Plus} label="Add a page" />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
@@ -169,15 +178,7 @@ export const Navigation = () => {
             </PopoverContent>
           </Popover>
         </div>
-        <div className="mt-4">
-          {/* {documents?.map((document) => (
-            <div key={document._id}>
-              <p>{document.title}</p>
-            </div>
-          ))} */}
-          <DocumentList data={[]} />
-          <Item onClick={handleCreate} icon={Plus} label="Add a page" />
-        </div>
+
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
