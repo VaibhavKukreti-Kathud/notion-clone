@@ -99,7 +99,6 @@ export const TrashBox = () => {
                 <div
                   role="button"
                   className="rounded-sm p-2 hover:bg-neutral-200"
-                  onClick={(e) => onRemove(document._id)}
                 >
                   <Trash className="h-4 w-4 text-red-400" />
                 </div>

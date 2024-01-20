@@ -194,24 +194,26 @@ export const remove = mutation({
       throw new Error("Not authorized");
     }
 
-    const recursiveRemove = async (documentId: Id<"documents">) => {
-      const children = await context.db
-        .query("documents")
-        .withIndex("by_user_parent", (q) =>
-          q.eq("userId", userId).eq("parentDocument", documentId),
-        )
-        .collect();
-
-      for (const child of children) {
-        await context.db.delete(child._id);
-        await recursiveRemove(child._id);
-      }
-    };
-
     const document = await context.db.delete(args.id);
-
-    recursiveRemove(args.id);
-
     return document;
+  },
+});
+
+export const getSearch = query({
+  handler: async (context) => {
+    const identity = await context.auth.getUserIdentity();
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+    const documents = await context.db
+      .query("documents")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .filter((q) => q.eq(q.field("isArchived"), false))
+      .order("desc")
+      .collect();
+
+    return documents;
   },
 });
