@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-https: type SearchState = {
+type SearchState = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
