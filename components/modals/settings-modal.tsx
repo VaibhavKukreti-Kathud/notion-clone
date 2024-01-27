@@ -15,7 +15,13 @@ export const SettingsModal = () => {
           <h2 className="text-lg font-medium">My Settings</h2>
         </DialogHeader>
         <div className="flex items-center justify-between">
-          <Label>Theme</Label>
+          <div className="flex flex-col gap-y-1">
+            <Label>Appearence</Label>
+            <span className="text-[0.8rem] text-muted-foreground">
+              Customize how Votion looks on your device.
+            </span>
+          </div>
+          <ModeToggle />
         </div>
       </DialogContent>
     </Dialog>
