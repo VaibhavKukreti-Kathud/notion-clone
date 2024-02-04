@@ -25,7 +25,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { TrashBox } from "./trash-box";
-
 import { useSearch } from "@/hooks/use-search";
 import { useSettings } from "@/hooks/use-settings";
 
@@ -62,7 +61,6 @@ export const Navigation = () => {
   ) => {
     event.preventDefault();
     event.stopPropagation();
-
     isResizingRef.current = true;
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
@@ -122,7 +120,7 @@ export const Navigation = () => {
 
   const handleCreate = async () => {
     const promise = create({
-      title: "Untitled",
+      title: "Untitled"
     });
     toast.promise(promise, {
       loading: "Creating new note...",
