@@ -13,7 +13,7 @@ import {
   CommandList,
   CommandEmpty,
   CommandGroup,
-  CommandItem,
+  CommandItem
 } from "./ui/command";
 
 export const SearchCommand = () => {

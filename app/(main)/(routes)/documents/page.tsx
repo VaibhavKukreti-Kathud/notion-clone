@@ -42,7 +42,7 @@ const DocumentsPage = () => {
         className="hidden dark:block"
       />
       <h2 className="text-lg  font-medium">
-        Hi <b>{user?.firstName}</b>, This is your Votion
+        Hi <b>{user?.firstName} lund</b>, This is your Votion
       </h2>
       <Button onClick={onCreate} variant="secondary" className={cn("gap-x-2")}>
         <PlusCircle className="h-4 w-4 mr-[3px] "></PlusCircle>
